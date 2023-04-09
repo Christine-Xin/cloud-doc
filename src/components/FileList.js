@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faEdit,faTrash,faTimes} from "@fortawesome/free-solid-svg-icons"
 import {faMarkdown} from "@fortawesome/free-brands-svg-icons"
 import PropTypes from 'prop-types'
+import useKeyPress from "../hooks/useKeyPress";
 
 const FileList=({files,onFileClick, onSaveEdit, onFileDelete})=>{
     const [editStatus, setEditStatus]=useState(false)
@@ -12,6 +13,20 @@ const FileList=({files,onFileClick, onSaveEdit, onFileDelete})=>{
         setValue('')
         setEditStatus(false)
     }
+    const enterPressed=useKeyPress(13)
+    const escPressed = useKeyPress(27)
+    useEffect(()=>{
+        if(enterPressed && editStatus){
+            const editItem = files.find(file => file.id === editStatus)
+            onSaveEdit(editItem.id, value)
+            setValue('')
+            setEditStatus(false)
+        }
+        if(escPressed && editStatus){
+            closeSearch()
+        }
+        
+    })
     return (
         <ul className="list-group list-group-flush file-list">
             {
@@ -58,5 +73,6 @@ FileList.propTypes={
     files:PropTypes.array,
     onFileClick:PropTypes.func,
     onFileDelete:PropTypes.func,
+    onSaveEdit:PropTypes.func,
 }
 export default FileList;

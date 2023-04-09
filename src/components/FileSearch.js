@@ -2,6 +2,7 @@ import React, {useState,useEffect, useRef} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faSearch} from "@fortawesome/free-solid-svg-icons"
 import PropTypes from 'prop-types'
+import useKeyPress from "../hooks/useKeyPress";
 
 const FileSearch = ({title, onSearchFile})=>{
     const [inputActive, setInputActive] = useState(false)
@@ -12,19 +13,15 @@ const FileSearch = ({title, onSearchFile})=>{
         setValue('')
     }
     const node= useRef()
+    const enterPressed=useKeyPress(13)
+    const escPressed = useKeyPress(27)
     useEffect(()=>{
-        const handleInputEvent = (event) =>{
-            const {keyCode}=event
-            if(keyCode ===13 && inputActive){
-                onSearchFile(value)
-            }else if(keyCode ===27 && inputActive){
-
-            }
-        }
-        document.addEventListener("keyup",handleInputEvent)
-        return ()=>{
-            document.removeEventListener("keyup",handleInputEvent)
-        }
+       if(enterPressed && inputActive){
+        onSearchFile(value)
+       }
+       if(escPressed && inputActive){
+        closeSearch()
+       }
     })
     useEffect(()=>{
         if(inputActive){
@@ -37,7 +34,7 @@ const FileSearch = ({title, onSearchFile})=>{
               !inputActive && 
               <div className="d-flex justify-content-between align-items-center">
                 <span>{title}</span>
-                <button type="button" className="btn btn-primary icon-button" onClick={()=>{setInputActive(true)}}>
+                <button type="button" className="btn icon-button" onClick={()=>{setInputActive(true)}}>
                     <FontAwesomeIcon title="搜索" icon={faSearch} size="lg"/>
                 </button>
               </div>
