@@ -13,7 +13,7 @@ const createWindow = () => {
     }
   })
   const usrLocation=isDev?'http://localhost:3000/':''
-  win.loadURL('http://localhost:3000')
+  win.loadURL(usrLocation)
   win.webContents.openDevTools()
 }
 
